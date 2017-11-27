@@ -18,4 +18,7 @@ class Oystercard
     @balance -= money
   end
 
+  def in_journey?
+    [true, false].sample
+  end
 end

@@ -36,4 +36,11 @@ describe Oystercard do
       expect{ subject.deduct 10 }.to change {subject.balance}.by -10
     end
   end
+
+  describe "#in_journey?" do
+    it "should return true of false to show the journey status" do
+      expect(subject.in_journey?).to eq(true).or(eq(false))
+    end
+  end
+
 end
