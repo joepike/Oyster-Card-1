@@ -38,9 +38,20 @@ describe Oystercard do
   end
 
   describe "#in_journey?" do
-    it "should return true of false to show the journey status" do
-      expect(subject.in_journey?).to eq(true).or(eq(false))
+    it "should check if it is initially not in journey" do
+      expect(subject).not_to be_in_journey
     end
   end
+
+  # describe "#touch_in" do
+  #   it "should be in_journey when touched in" do
+  #     p subject.touch_in
+  #     expect(subject.touch_in).to be_in_journey
+  #   end
+  # end
+
+  # describe "#touch_out" do
+  #
+  # end
 
 end
