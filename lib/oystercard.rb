@@ -13,4 +13,9 @@ class Oystercard
     raise "You have reached a top up limit of £#{DEFAULT_LIMIT}" if  money + @balance > DEFAULT_LIMIT
     @balance += money
   end
+
+  def deduct(money)
+    @balance -= money
+  end
+
 end
