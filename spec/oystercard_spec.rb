@@ -21,5 +21,17 @@ describe Oystercard do
     expect(subject.balance).to eq 10
   end
 
+  it 'should set a top up limit of 90 pounds' do
+    limit = Oystercard::DEFAULT_LIMIT
+    subject.top_up(limit)
+    expect{ subject.top_up(1) }.to raise_error "You have reached a top up limit of £#{limit}"
+  end
+
+  it "should raise error if initial balance is not nil before top_up" do
+    limit = Oystercard::DEFAULT_LIMIT
+    subject.top_up(10)
+    expect{ subject.top_up(limit) }.to raise_error "You have reached a top up limit of £#{limit}"
+  end
+
 
 end
