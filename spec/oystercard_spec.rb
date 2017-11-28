@@ -43,15 +43,18 @@ describe Oystercard do
     end
   end
 
-  # describe "#touch_in" do
-  #   it "should be in_journey when touched in" do
-  #     p subject.touch_in
-  #     expect(subject.touch_in).to be_in_journey
-  #   end
-  # end
+  describe "#touch_in" do
+    it "should be in_journey when touched in" do
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+  end
 
-  # describe "#touch_out" do
-  #
-  # end
+  describe "#touch_out" do
+     it "should not be in_journey when touched out" do
+       subject.touch_out
+       expect(subject).to_not be_in_journey
+     end
+  end
 
 end
