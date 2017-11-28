@@ -4,6 +4,8 @@ describe Oystercard do
 
   it { is_expected.to respond_to :balance }
 
+  let(:entry_station) { double(:entry_station) }
+
   it 'should initialize with a balance of zero' do
     expect(subject.balance).to eq 0
   end
@@ -36,15 +38,29 @@ describe Oystercard do
   end
 
   describe "#touch_in" do
-    it "should be in_journey when touched in" do
-      subject.top_up(Oystercard::DEFAULT_MINIMUM)
-      subject.touch_in
-      expect(subject).to be_in_journey
-    end
+
+      context "with top-up" do
+
+        before do
+          subject.top_up(Oystercard::DEFAULT_MINIMUM)
+        end
+
+        it "should be in_journey when touched in" do
+          subject.touch_in(entry_station)
+          expect(subject).to be_in_journey
+        end
+
+        it "should store the start station in instance variable" do
+          subject.touch_in(entry_station)
+          expect(subject.entry_station).to eq(entry_station)
+        end
+
+      end
 
     it "should raise an error when attempting to touch in with balance of < £#{Oystercard::DEFAULT_MINIMUM}" do
-      expect {subject.touch_in }.to raise_error "Insufficient balance for journey"
+      expect {subject.touch_in(entry_station) }.to raise_error "Insufficient balance for journey"
     end
+
 
   end
 
@@ -56,6 +72,13 @@ describe Oystercard do
 
      it "should deduct a given amount when touched out" do
        expect { subject.touch_out }.to change{ subject.balance }.by(-Oystercard::DEFAULT_MINIMUM)
+     end
+
+     it "should remove entry station from the instance variable" do
+       subject.top_up(10)
+       subject.touch_in(entry_station)
+       subject.touch_out
+       expect(subject.entry_station).to eq nil
      end
 
   end
