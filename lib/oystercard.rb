@@ -5,6 +5,7 @@ class Oystercard
   attr_accessor :in_journey
 
   DEFAULT_LIMIT = 90
+  DEFAULT_MINIMUM = 1
 
   def initialize
     @balance = 0
@@ -25,6 +26,7 @@ class Oystercard
   end
 
   def touch_in
+    raise "Insufficient balance for journey" if @balance < 1
     @in_journey = true
   end
 
