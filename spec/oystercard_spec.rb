@@ -4,11 +4,20 @@ describe Oystercard do
 
   it { is_expected.to respond_to :balance }
 
-  let(:entry_station) { double(:entry_station) }
+  let(:station) { double(:station) }
 
   it 'should initialize with a balance of zero' do
     expect(subject.balance).to eq 0
   end
+
+  it "should initialize with an empty array of journeys" do
+    expect(subject.journeys).to eq []
+  end
+  #
+  # it "should create a hash in the journeys array" do
+  #
+  #   expect(subject.journey).to eq {}
+  # end
 
   describe '#top_up' do
 
@@ -43,43 +52,63 @@ describe Oystercard do
 
         before do
           subject.top_up(Oystercard::DEFAULT_MINIMUM)
+          subject.touch_in(station)
         end
 
         it "should be in_journey when touched in" do
-          subject.touch_in(entry_station)
           expect(subject).to be_in_journey
         end
 
         it "should store the start station in instance variable" do
-          subject.touch_in(entry_station)
-          expect(subject.entry_station).to eq(entry_station)
+          expect(subject.entry_station).to eq(station)
         end
-
       end
 
     it "should raise an error when attempting to touch in with balance of < £#{Oystercard::DEFAULT_MINIMUM}" do
-      expect {subject.touch_in(entry_station) }.to raise_error "Insufficient balance for journey"
+      expect {subject.touch_in(station) }.to raise_error "Insufficient balance for journey"
     end
 
 
   end
 
   describe "#touch_out" do
+
+    before do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(station)
+    end
      it "should not be in_journey when touched out" do
-       subject.touch_out
        expect(subject).to_not be_in_journey
      end
 
      it "should deduct a given amount when touched out" do
-       expect { subject.touch_out }.to change{ subject.balance }.by(-Oystercard::DEFAULT_MINIMUM)
+       expect { subject.touch_out(station) }.to change{ subject.balance }.by(-Oystercard::DEFAULT_MINIMUM)
      end
 
      it "should remove entry station from the instance variable" do
-       subject.top_up(10)
-       subject.touch_in(entry_station)
-       subject.touch_out
        expect(subject.entry_station).to eq nil
      end
+
+     it "should store the exit station in an instance variable" do
+       expect(subject.exit_station).to eq(station)
+     end
+  end
+
+  describe "#record_journey" do
+
+    before do
+      subject.top_up(10)
+      subject.touch_in(station)
+      subject.touch_out(station)
+    end
+    it "should add the exit station to a journey hash" do
+      expect(subject.journey).to include(station => station)
+    end
+
+    it "should push the journey has into the journeys array" do
+      expect(subject.journeys).to include(subject.journey)
+    end
 
   end
 
