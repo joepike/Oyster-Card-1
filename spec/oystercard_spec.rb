@@ -13,11 +13,6 @@ describe Oystercard do
   it "should initialize with an empty array of journeys" do
     expect(subject.journeys).to eq []
   end
-  #
-  # it "should create a hash in the journeys array" do
-  #
-  #   expect(subject.journey).to eq {}
-  # end
 
   describe '#top_up' do
 
@@ -103,7 +98,7 @@ describe Oystercard do
       subject.touch_out(station)
     end
     it "should add the exit station to a journey hash" do
-      expect(subject.journey).to include(station => station)
+      expect(subject.journey).to include(:entry_station => station, :exit_station => station)
     end
 
     it "should push the journey has into the journeys array" do
