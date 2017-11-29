@@ -1,4 +1,8 @@
+require "./lib/journey"
+
+
 class Oystercard
+
   attr_reader :balance, :entry_station, :exit_station, :journeys, :journey
 
   DEFAULT_LIMIT = 90
@@ -19,26 +23,24 @@ class Oystercard
   end
 
   def touch_in(entry_station)
+    @journey = Journey.new
     raise "Insufficient balance for journey" if @balance < 1
-    @entry_station = entry_station
+    @journey.start_journey(entry_station)
+    @journeys << @journey
   end
 
   def touch_out(exit_station)
-    deduct(DEFAULT_MINIMUM)
-    @exit_station = exit_station
-    record_journey
-    @entry_station = nil
+    @journey.end_journey(exit_station)
+    # record_journey
+    # @journeys << @journey
+    # @journey = []
   end
 
   private
 
-  def record_journey
-    @journey = {:entry_station => @entry_station, :exit_station => @exit_station}
-    @journeys << @journey
-  end
+  # def record_journey
+  #   @journeys << @initiated_journey
+  # end
 
-  def deduct(money)
-    @balance -= money
-  end
 
 end
