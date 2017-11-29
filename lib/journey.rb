@@ -5,21 +5,23 @@ class Journey
   PENALTY_FARE = 6
 
   def initialize()
-    @journey = {:entry_station => nil , :exit_station => nil, :complete => nil}
+    @entry_station = nil
+    @exit_station = nil
+    @complete = nil
   end
 
   def start_journey(station)
-    @journey[:entry_station] = station
+    @entry_station = station
   end
 
   def end_journey(station)
-    @journey[:exit_station] = station
-    @journey[:complete] = true
+    @exit_station = station
+    @complete = true
     # @journeys << @journey
   end
 
-  def complete?
-    @journey[:complete] == true
+  def complete
+    @complete
   end
 
   def fare
@@ -27,11 +29,15 @@ class Journey
   end
 
   def touched_in
-    @journey[:entry_station]
+    @entry_station
   end
 
   def touched_out
-    @journey[:exit_station]
+    @exit_station
+  end
+
+  def in_journey
+    @entry_station != nil
   end
 
 

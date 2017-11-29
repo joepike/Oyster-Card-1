@@ -6,12 +6,12 @@ describe Journey do
  it "should know that a journey is complete" do
    journey.start_journey("Temple")
    journey.end_journey("Bank")
-   expect(journey).to be_complete
+   expect(journey.complete).to eq true
  end
 
  it "should know that a journey is not complete" do
    journey.start_journey("Temple")
-   expect(journey).to_not be_complete
+   expect(journey).to_not eq true
  end
 
  it "should know that user has not touched in" do

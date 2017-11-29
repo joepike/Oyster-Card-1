@@ -36,8 +36,15 @@ describe Oystercard do
   end
 
   describe "#in_journey?" do
+
+    before do
+      subject.top_up(Oystercard::DEFAULT_MINIMUM)
+      subject.touch_in(station)
+      subject.touch_out(station)
+    end
+
     it "should check if it is initially not in journey" do
-      expect(subject).not_to be_in_journey
+      expect(subject.in_journey).not_to eq true
     end
   end
 
@@ -51,16 +58,11 @@ describe Oystercard do
         end
 
         it "should be in_journey when touched in" do
-          expect(subject).to be_in_journey
+          expect(subject.in_journey).to eq true
         end
 
-        it "should store the start station in instance variable" do
-          expect(subject.entry_station).to eq(station)
-        end
-      end
 
-    it "should raise an error when attempting to touch in with balance of < £#{Oystercard::DEFAULT_MINIMUM}" do
-      expect {subject.touch_in(station) }.to raise_error "Insufficient balance for journey"
+
     end
 
 
