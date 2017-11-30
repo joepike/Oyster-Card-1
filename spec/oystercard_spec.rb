@@ -5,6 +5,8 @@ describe Oystercard do
   it { is_expected.to respond_to :balance }
 
   let(:station) { double(:station) }
+  let(:journey) { double(:journey, fare: Oystercard::DEFAULT_MINIMUM, start_journey: true, end_journey: true)}
+  let(:penalty_journey) { double(:journey, fare: Oystercard::PENALTY_FARE, start_journey: true, end_journey: true)}
 
   it 'should initialize with a balance of zero' do
     expect(subject.balance).to eq 0
@@ -37,14 +39,8 @@ describe Oystercard do
 
   describe "#in_journey?" do
 
-    before do
-      subject.top_up(Oystercard::DEFAULT_MINIMUM)
-      subject.touch_in(station)
-      subject.touch_out(station)
-    end
-
     it "should check if it is initially not in journey" do
-      expect(subject.in_journey).not_to eq true
+      expect(subject).not_to be_in_journey
     end
   end
 
@@ -53,18 +49,21 @@ describe Oystercard do
       context "with top-up" do
 
         before do
-          subject.top_up(Oystercard::DEFAULT_MINIMUM)
-          subject.touch_in(station)
+          subject.top_up(90)
+          subject.touch_in(station, journey)
         end
 
         it "should be in_journey when touched in" do
-          expect(subject.in_journey).to eq true
+          expect(subject.in_journey?).to eq true
         end
 
-
+        it "should charge a penalty for double touch_in" do
+          subject.touch_out(station)
+          subject.touch_in(station, penalty_journey)
+          expect { subject.touch_in(station, penalty_journey) }.to change { subject.balance }.by(-Oystercard::PENALTY_FARE)
+        end
 
     end
-
 
   end
 
@@ -72,14 +71,16 @@ describe Oystercard do
 
     before do
       subject.top_up(10)
-      subject.touch_in(station)
+      subject.touch_in(station, journey)
       subject.touch_out(station)
     end
+
      it "should not be in_journey when touched out" do
        expect(subject).to_not be_in_journey
      end
 
-     it "should deduct a given amount when touched out" do
+     it "should deduct the correct fare when touched out" do
+       subject.touch_in(station, journey)
        expect { subject.touch_out(station) }.to change{ subject.balance }.by(-Oystercard::DEFAULT_MINIMUM)
      end
 
@@ -87,27 +88,19 @@ describe Oystercard do
        expect(subject.entry_station).to eq nil
      end
 
-     it "should store the exit station in an instance variable" do
-       expect(subject.exit_station).to eq(station)
+     it "creates a new journey if there is no current journey" do
+       expect { subject.touch_out(station, journey) }.to change { subject.journeys.size }.by 1
      end
+
   end
 
   describe "#record_journey" do
 
-    before do
+    it "record journey history" do
       subject.top_up(10)
-      subject.touch_in(station)
-      subject.touch_out(station)
-    end
-    it "should add the exit station to a journey hash" do
-      expect(subject.journey).to include(:entry_station => station, :exit_station => station)
-    end
-
-    it "should push the journey has into the journeys array" do
-      expect(subject.journeys).to include(subject.journey)
+      subject.touch_in(station, journey)
+      expect { subject.touch_out(station) }.to change { subject.journeys.size }.by 1
     end
 
   end
-
-
 end

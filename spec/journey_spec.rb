@@ -2,11 +2,12 @@ require "journey"
 
 describe Journey do
   let(:journey) {described_class.new}
+  let(:station) { double(:station) }
 
  it "should know that a journey is complete" do
    journey.start_journey("Temple")
    journey.end_journey("Bank")
-   expect(journey.complete).to eq true
+   expect(journey.complete?).to eq true
  end
 
  it "should know that a journey is not complete" do
@@ -31,7 +32,12 @@ describe Journey do
  it "should charge a penalty fare for incomplete journeys" do
    journey.start_journey("Temple")
    # journey.end_journey("Bank")
-   expect(journey.fare).to eq Journey::PENALTY_FARE
+   expect(journey.fare).to eq Oystercard::PENALTY_FARE
+ end
+
+ it "should store the exit station in an instance variable" do
+   subject.end_journey("Bank")
+   expect(subject.touched_out).to eq("Bank")
  end
 
 end

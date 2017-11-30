@@ -2,30 +2,26 @@
 
 class Journey
 
-  PENALTY_FARE = 6
-
-  def initialize()
-    @entry_station = nil
-    @exit_station = nil
-    @complete = nil
-  end
-
   def start_journey(station)
     @entry_station = station
+    @complete = try_to_complete_journey
   end
 
   def end_journey(station)
     @exit_station = station
-    @complete = true
-    # @journeys << @journey
+    @complete = try_to_complete_journey
   end
 
-  def complete
+  def complete?
     @complete
   end
 
   def fare
-    !touched_in.nil? && !touched_out.nil? ? Oystercard::DEFAULT_MINIMUM : 6
+    complete? ? Oystercard::DEFAULT_MINIMUM : 6
+  end
+
+  def try_to_complete_journey
+    !touched_in.nil? && !touched_out.nil?
   end
 
   def touched_in
@@ -36,8 +32,8 @@ class Journey
     @exit_station
   end
 
-  def in_journey
-    @entry_station != nil
+  def in_journey?
+    !!@entry_station
   end
 
 
