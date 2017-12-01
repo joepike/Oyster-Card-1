@@ -2,6 +2,8 @@
 
 class Journey
 
+  attr_reader :entry_station
+
   def start_journey(station)
     @entry_station = station
     @complete = try_to_complete_journey

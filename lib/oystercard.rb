@@ -1,5 +1,6 @@
 require "./lib/journey"
 require './lib/station'
+require './lib/journeylog'
 
 class Oystercard
 
@@ -11,9 +12,7 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @journeys = []
-    @journey = nil
-    #@journey_log = JourneyLog.new(Journey)
+    @journey_log = JourneyLog.new()
   end
 
   def top_up(money)
@@ -21,35 +20,35 @@ class Oystercard
     @balance += money
   end
 
-  def in_journey?
-    !!@journey
-  end
+  # def in_journey?
+  #   !!@journey_log.@journey
+  # end
 
-  def touch_in(entry_station, journey = Journey.new)
-    double_touch_in if in_journey?
-    @journey = journey
+  def touch_in(entry_station)
+    double_touch_in if @journey_log.in_journey?
     raise "Insufficient balance for journey" if @balance < 1
-    @journey.start_journey(entry_station)
+    @journey_log.start(entry_station)
   end
 
-  def touch_out(exit_station, journey = Journey.new)
-    @journey = journey if !in_journey?
-    @journey.end_journey(exit_station)
-    deduct(@journey.fare)
-    journey_reset
+  def touch_out(exit_station)
+    # @journey_log.current_journey = journey if !in_journey?
+    @journey_log.finish(exit_station)
+    deduct(@journey_log.current_journey.fare)
+    @journey_log.reset_current_journey
   end
 
   private
 
   def double_touch_in
-    deduct(@journey.fare)
-    journey_reset
+    deduct(@journey_log.current_journey.fare)
+    @journey_log.journey_reset
+    @journey_log.reset_current_journey
   end
 
-  def journey_reset
-    @journeys << @journey
-    @journey = nil
-  end
+  # def journey_reset
+  #   @journeys << @journey
+  #   @journey = nil
+  # end
 
   def deduct(amount)
     @balance -= amount
