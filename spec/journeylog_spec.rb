@@ -7,10 +7,6 @@ describe JourneyLog do
   let(:journey_class) { double :journey_class, new: journey }
   subject(:jl) { described_class.new(journey_class: journey_class) }
 
-  # it "should be initialized with a journey_class parameter that responds to journey methods" do
-  #   expect(jl.)
-  # end
-
   it "should initialize with an empty array of journeys" do
     expect(subject.journeys).to eq []
   end
