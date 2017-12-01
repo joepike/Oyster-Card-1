@@ -60,11 +60,4 @@ describe JourneyLog do
 
   end
 
-  describe "#current_journey" do
-    it "should return an incomplete journey or return a new journey" do
-      subject.touch_in(station)
-      expect(subject.current_journey.entry_station).to !nil
-    end
-  end
-
 end

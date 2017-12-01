@@ -19,7 +19,7 @@ class Journey
   end
 
   def fare
-    complete? ? Oystercard::DEFAULT_MINIMUM : 6
+    complete? ? calc_fare : 6
   end
 
   def try_to_complete_journey
@@ -36,6 +36,10 @@ class Journey
 
   def in_journey?
     !!@entry_station
+  end
+
+  def calc_fare
+    @entry_station.zone == @exit_station.zone ? Oystercard::DEFAULT_MINIMUM : (@entry_station.zone - @exit_station.zone).abs
   end
 
 

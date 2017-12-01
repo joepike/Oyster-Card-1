@@ -1,10 +1,13 @@
 require 'oystercard'
+require 'station'
 
 describe Oystercard do
 
   it { is_expected.to respond_to :balance }
 
-  let(:station) { double(:station) }
+  let(:station) { double(:station, zone: 1) }
+  let(:station_1) { double(:station_1, zone: 1) }
+  let(:station_2) { double(:station_2, zone: 3) }
   let(:journey) { double(:journey, fare: Oystercard::DEFAULT_MINIMUM, start_journey: true, end_journey: true)}
   let(:penalty_journey) { double(:journey, fare: Oystercard::PENALTY_FARE, start_journey: true, end_journey: true)}
 
@@ -56,8 +59,8 @@ describe Oystercard do
 
      it "should deduct the correct fare when touched out" do
        subject.top_up(20)
-       subject.touch_in(station)
-       expect { subject.touch_out(station) }.to change{ subject.balance }.by(-Oystercard::DEFAULT_MINIMUM)
+       subject.touch_in(station_1)
+       expect { subject.touch_out(station_2) }.to change{ subject.balance }.by(-2)
      end
 
   end

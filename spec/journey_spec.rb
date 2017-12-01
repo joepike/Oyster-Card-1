@@ -5,13 +5,13 @@ describe Journey do
   let(:station) { double(:station) }
 
  it "should know that a journey is complete" do
-   journey.start_journey("Temple")
-   journey.end_journey("Bank")
+   journey.start_journey(station)
+   journey.end_journey(station)
    expect(journey.complete?).to eq true
  end
 
  it "should know that a journey is not complete" do
-   journey.start_journey("Temple")
+   journey.start_journey(station)
    expect(journey).to_not eq true
  end
 
@@ -23,21 +23,15 @@ describe Journey do
    expect(journey.touched_out).to eq nil
  end
 
- it "should charge the minimum fare for a complete journey" do
-   journey.start_journey("Temple")
-   journey.end_journey("Bank")
-   expect(journey.fare).to eq Oystercard::DEFAULT_MINIMUM
- end
-
  it "should charge a penalty fare for incomplete journeys" do
-   journey.start_journey("Temple")
-   # journey.end_journey("Bank")
+   journey.start_journey(station)
+   # journey.end_journey(station)
    expect(journey.fare).to eq Oystercard::PENALTY_FARE
  end
 
  it "should store the exit station in an instance variable" do
-   subject.end_journey("Bank")
-   expect(subject.touched_out).to eq("Bank")
+   subject.end_journey(station)
+   expect(subject.touched_out).to eq(station)
  end
 
 end
